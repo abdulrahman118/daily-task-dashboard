@@ -4,7 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Toaster } from '@/components/ui/toaster';
+import { toast } from "@/hooks/use-toast"
 import { Plus, X, Trash2 } from 'lucide-react';
+import { getRandomMessage } from '@/constants/messages';
 
 // Define types for our task structure
 interface Task {
@@ -127,7 +130,7 @@ const clearAllTasks = () => {
       
       setTasks(prev => {
         const sourceTask = prev[sourceStatus].find(t => t.id === taskId);
-        if (!sourceTask) return prev;
+        if (!sourceTask) return prev;        
         
         return {
           ...prev,
@@ -135,8 +138,29 @@ const clearAllTasks = () => {
           [toStatus]: [...prev[toStatus], sourceTask]
         };
       });
+
+      // Show success message if task is moved to 'done'
+      if (toStatus === 'done') {
+        // Wrap in setTimeout to avoid state update during render
+        setTimeout(() => {  
+          toast({
+            title: getRandomMessage('success'),
+            duration: 2000,
+            className: "bg-green-50 border-green-200",
+          });
+        }, 0);
+      }
+
     } catch (err) {
       console.error('Failed to process drop:', err);
+
+      setTimeout(() => {
+        toast({
+          title: 'Failed to move task',
+          variant: "destructive",
+          duration: 2000,
+        });
+      }, 0);
     }
   };
   // const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
@@ -300,7 +324,7 @@ const clearAllTasks = () => {
         </div>
         
         {/* Kanban Board Section */}
-        <div className="flex gap-8">
+        <div className="flex gap-8 justify-between w-full">
           <Column 
             title="To Do" 
             status="todo" 
@@ -323,6 +347,7 @@ const clearAllTasks = () => {
           <p>Tip: Drag and drop tasks to update their status</p>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 
