@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { toast } from "@/hooks/use-toast"
 import { Plus, X, Trash2 } from 'lucide-react';
 import { getRandomMessage } from '@/constants/messages';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 // Define types for our task structure
 interface Task {
@@ -184,28 +185,28 @@ const clearAllTasks = () => {
   
     return (
       <div className="grid grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-sm font-medium text-slate-600">Total Tasks</h3>
           <div className="flex items-center gap-2">
-            <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.total}</p>
             <span className="text-sm text-slate-500">tasks</span>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-sm font-medium text-slate-600">In Progress</h3>
           <div className="flex items-center gap-2">
             <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
             <span className="text-sm text-slate-500">tasks</span>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-sm font-medium text-slate-600">Completed</h3>
           <div className="flex items-center gap-2">
             <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
             <span className="text-sm text-slate-500">tasks</span>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-sm font-medium text-slate-600">Completion Rate</h3>
           <div className="flex items-center gap-2">
             <p className="text-2xl font-bold text-indigo-600">{stats.completionRate}</p>
@@ -242,40 +243,40 @@ const clearAllTasks = () => {
     tasks: Task[] 
   }) => (
     <div
-      className="bg-white p-4 rounded-lg w-80 min-h-[300px] shadow-sm border border-slate-200"
+      className="bg-white p-4 rounded-lg w-80 min-h-[300px] shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={(e) => handleDrop(e, status)}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-lg text-slate-800">{title}</h3>
-        <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-sm">
+        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{title}</h3>
+        <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-sm dark:bg-slate-600 dark:text-slate-200">
           {tasks.length}
         </span>
       </div>
       {tasks.map(task => (
         <Card
           key={task.id}
-          className="mb-3 hover:shadow-md transition-all group relative cursor-grab active:cursor-grabbing border-slate-200"
+          className="mb-3 hover:shadow-md transition-all group relative cursor-grab active:cursor-grabbing border-slate-200 dark:bg-slate-900 dark:border-slate-700"
           draggable="true"
           onDragStart={(e) => handleDragStart(e, task, status)}
           onDragEnd={handleDragEnd}
         >
           <CardContent className="p-4 flex items-center justify-between">
-            <span className="text-slate-700">{task.content}</span>
+            <span className="text-slate-700 dark:text-slate-300">{task.content}</span>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => removeTask(task.id, status)}
-              className="h-8 w-8 p-0 hover:bg-slate-200 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-8 w-8 p-0 hover:bg-slate-200 rounded-full opacity-0 group-hover:opacity-100 transition-opacity dark:hover:bg-slate-700"
             >
-              <X className="h-4 w-4 text-slate-500 hover:text-slate-700" />
+              <X className="h-4 w-4 text-slate-500 hover:text-slate-700 dark:text-slate-400" />
             </Button>
           </CardContent>
         </Card>
       ))}
       {tasks.length === 0 && (
-        <div className="h-20 flex items-center justify-center text-slate-500 border-2 border-dashed rounded-lg">
+        <div className="h-20 flex items-center justify-center text-slate-500 border-2 border-dashed rounded-lg dark:text-slate-400 dark:border-slate-700">
           Drop tasks here
         </div>
       )}
@@ -283,14 +284,15 @@ const clearAllTasks = () => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 w-full">
       <div className="p-8 max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Daily Task Dashboard</h1>
-            <p className="text-slate-600 mt-1">Manage and track your daily tasks efficiently</p>
+            <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Daily Task Dashboard</h1>
+            <p className="text-slate-600 mt-1 dark:text-slate-400">Manage and track your daily tasks efficiently</p>
           </div>
+          <ThemeToggle />
           {/* Clear All Button */}
           <Button 
             onClick={clearAllTasks}
@@ -306,17 +308,17 @@ const clearAllTasks = () => {
         <Statistics />
         
         {/* Task Input Section */}
-        <div className="mb-8 p-4 bg-white rounded-lg shadow-sm">
+        <div className="mb-8 p-4 bg-white rounded-lg shadow-sm dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <div className="flex gap-4">
             <Input
               type="text"
               value={newTask}
               onChange={(e) => setNewTask(e.target.value)}
               placeholder="Add a new task for today"
-              className="w-96"
+              className="w-96 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:border-slate-700"
               onKeyDown={(e) => e.key === 'Enter' && addTask()}
             />
-            <Button onClick={addTask} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={addTask} className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
               <Plus className="h-4 w-4 mr-2" />
               Add Task
             </Button>
