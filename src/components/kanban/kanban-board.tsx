@@ -65,8 +65,7 @@ const clearAllTasks = () => {
   }
   };
   
-  const [newTask, setNewTask] = useState('');
-  const [draggedItem, setDraggedItem] = useState<{id: string, sourceColumn: keyof TasksByStatus} | null>(null);
+  const [newTask, setNewTask] = useState('');  
 
   const handleDragStart = (e: React.DragEvent, task: Task, status: keyof TasksByStatus) => {
   // Set the drag data
