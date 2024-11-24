@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, X, GripVertical } from 'lucide-react';
+import { Plus, X, Trash2 } from 'lucide-react';
 
 // Define types for our task structure
 interface Task {
@@ -25,18 +25,46 @@ interface DragData {
 
 const KanbanBoard = () => {
   const [tasks, setTasks] = useState<TasksByStatus>({
-    todo: [
-      { id: '1', content: 'Check emails' },
-      { id: '2', content: 'Team meeting' }
-    ],
-    inProgress: [
-      { id: '3', content: 'Update documentation' }
-    ],
-    done: [
-      { id: '4', content: 'Morning standup' }
-    ]
+    todo: [],
+      inProgress: [],
+      done: []
   });
 
+  // Load data from localStorage after component mounts
+  useEffect(() => {
+    const savedTasks = localStorage.getItem('daily-tasks');
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    } else {
+      // Set default tasks only if no saved data
+      setTasks({
+        todo: [],
+        inProgress: [],
+        done: []
+      });
+    }
+  }, []);
+
+  // Save to localStorage whenever tasks change
+  useEffect(() => {
+    if (tasks) {
+      localStorage.setItem('daily-tasks', JSON.stringify(tasks));
+    }
+  }, [tasks]);
+
+  
+// Clear all tasks function
+const clearAllTasks = () => {
+  if (window.confirm('Are you sure you want to clear all tasks? This cannot be undone.')) {
+    setTasks({
+      todo: [],
+      inProgress: [],
+      done: []
+    });
+    localStorage.removeItem('daily-tasks');
+  }
+  };
+  
   const [newTask, setNewTask] = useState('');
   const [draggedItem, setDraggedItem] = useState<{id: string, sourceColumn: keyof TasksByStatus} | null>(null);
 
@@ -191,7 +219,7 @@ const KanbanBoard = () => {
     tasks: Task[] 
   }) => (
     <div
-      className="bg-white p-4 rounded-lg w-80 min-h-[500px] shadow-sm border border-slate-200"
+      className="bg-white p-4 rounded-lg w-80 min-h-[300px] shadow-sm border border-slate-200"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={(e) => handleDrop(e, status)}
@@ -235,9 +263,20 @@ const KanbanBoard = () => {
     <div className="min-h-screen bg-slate-50">
       <div className="p-8 max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-800">Daily Task Dashboard</h1>
-          <p className="text-slate-600 mt-1">Manage and track your daily tasks efficiently</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">Daily Task Dashboard</h1>
+            <p className="text-slate-600 mt-1">Manage and track your daily tasks efficiently</p>
+          </div>
+          {/* Clear All Button */}
+          <Button 
+            onClick={clearAllTasks}
+            variant="outline" 
+            className="text-red-600 hover:bg-red-50"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Clear All Tasks
+          </Button>
         </div>
   
         {/* Statistics Section */}
